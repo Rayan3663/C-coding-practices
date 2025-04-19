@@ -1,0 +1,73 @@
+/******************************************************************************
+
+                            Online C# Compiler.
+                Code, Compile, Run and Debug C# program online.
+Write your code in this editor and press "Run" button to execute it.
+
+*******************************************************************************/
+
+using System;
+using System.Collections.Generic;
+
+ // write one base class
+    public abstract class Employee{
+        public string name;
+        private int id;
+        private string department;
+        
+        public Employee(string name, int id, string department){
+            this.name = name;
+            this.id = id;
+            this.department = department;
+        }
+        
+        // for polymorphism (abstract class)
+        public abstract void calculateSalary();
+    }
+    
+    // inheriting classes
+    public class PartTimeEmployee : Employee{
+        public PartTimeEmployee(string name, int id, string department) : base(name, id, department){}
+        public override void calculateSalary(){
+            Console.WriteLine("partTime");
+        } 
+    }
+    
+    public class FullTimeEmployee : Employee{
+        public FullTimeEmployee(string name, int id, string department, int hoursWorked) : base(name, id, department){}
+        public override void calculateSalary(){
+            Console.WriteLine("fullTime");
+        } 
+    }
+    
+    public class EmployeeService {
+        
+        public List<Employee> employeeDetails = new List<Employee>();
+        
+        
+        public void addEmployees(Employee employeeDetails){
+             this.employeeDetails.Add(employeeDetails);
+        } 
+        
+        public void displayResult(){
+            foreach(var emp in employeeDetails){
+            emp.calculateSalary();
+            Console.WriteLine(emp.name);
+            }
+        }
+    }
+    
+class HelloWorld {
+    
+  static void Main() {
+    Employee emp1 = new FullTimeEmployee("Rayan", 1, "IT", 9);
+    Employee emp2 = new PartTimeEmployee("Royal", 2, "ESC");
+    
+    EmployeeService empService = new EmployeeService();
+    
+    empService.addEmployees(emp1);
+    empService.addEmployees(emp2);
+    
+    empService.displayResult();
+  }
+}

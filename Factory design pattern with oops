@@ -1,0 +1,112 @@
+/******************************************************************************
+
+                            Online C# Compiler.
+                Code, Compile, Run and Debug C# program online.
+Write your code in this editor and press "Run" button to execute it.
+
+*******************************************************************************/
+
+using System;
+using System.Collections.Generic;
+
+ // write one base class
+    public abstract class Employee{
+        private string name;
+        private int id;
+        private string department;
+        
+        public Employee(string name, int id, string department){
+            this.name = name;
+            this.id = id;
+            this.department = department;
+        }
+        
+        // for polymorphism (abstract class)
+        public abstract void calculateSalary();
+        
+        public virtual void displayResult(){
+            Console.WriteLine($"The name is {this.name} belongs to the department {this.department}");
+        }
+    }
+    
+    // inheriting classes
+    public class PartTimeEmployee : Employee{
+        public PartTimeEmployee(string name, int id, string department) : base(name, id, department){}
+        public override void calculateSalary(){
+            Console.WriteLine("partTime");
+        } 
+        
+        public override void displayResult(){
+            base.displayResult();
+            Console.WriteLine("Part time display");
+        }
+    }
+    
+    public class FullTimeEmployee : Employee{
+        public FullTimeEmployee(string name, int id, string department, int hoursWorked) : base(name, id, department){}
+        public override void calculateSalary(){
+            Console.WriteLine("fullTime");
+        } 
+    }
+    
+    
+    public class EmployeeService {
+        
+        public List<Employee> employeeDetails = new List<Employee>();
+        
+        
+        public void addEmployees(Employee employeeDetails){
+             this.employeeDetails.Add(employeeDetails);
+        } 
+        
+        public void displayResult(){
+            foreach(var emp in employeeDetails){
+            emp.calculateSalary();
+            emp.displayResult();
+            
+            }
+        }
+    }
+    
+    // creation of the factory class
+    
+    // enums
+    public enum EmployeeType{
+        PartTime,
+        FullTime
+    }
+    
+    public interface IEmployeeFactory{
+        Employee createEmployeeFactory(EmployeeType type, string name, int id, string department, int hoursWorked);
+    }
+    
+    public class employeeFactory : IEmployeeFactory{
+        public Employee createEmployeeFactory(EmployeeType type, string name, int id, string department, int hoursWorked = 0){
+            switch(type){
+                case EmployeeType.PartTime:
+                    return new PartTimeEmployee(name, id, department);
+                    
+                case EmployeeType.FullTime:
+                    return new FullTimeEmployee(name, id, department, hoursWorked);    
+                default :
+                    return null;
+            }
+        }
+    }
+    
+class HelloWorld {
+    
+  static void Main() {
+      
+    employeeFactory factory = new employeeFactory();  
+    Employee emp1 = factory.createEmployeeFactory(EmployeeType.FullTime, "Rayan", 1, "IT", 9);
+    Employee emp2 = factory.createEmployeeFactory(EmployeeType.PartTime, "Royal", 2, "ESC");
+    
+    EmployeeService empService = new EmployeeService();
+    
+    empService.addEmployees(emp1);
+    empService.addEmployees(emp2);
+    
+    empService.displayResult();
+  }
+}

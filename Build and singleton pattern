@@ -1,0 +1,171 @@
+/******************************************************************************
+
+                            Online C# Compiler.
+                Code, Compile, Run and Debug C# program online.
+Write your code in this editor and press "Run" button to execute it.
+
+*******************************************************************************/
+
+using System;
+using System.Collections.Generic;
+ // write one base class
+    public abstract class Employee{
+        private string name;
+        private int id;
+        private string department;
+        
+        public Employee(string name, int id, string department){
+            this.name = name;
+            this.id = id;
+            this.department = department;
+        }
+        
+        // for polymorphism (abstract class)
+        public abstract void calculateSalary();
+        
+        public virtual void displayResult(){
+            Console.WriteLine($"The name is {this.name} belongs to the department {this.department}");
+        }
+    }
+
+// inheriting classes
+    public class PartTimeEmployee : Employee{
+        public int hoursWorked;
+        
+        public PartTimeEmployee(string name, int id, string department, int hoursWorked) : base(name, id, department){}
+        
+        public override void calculateSalary(){
+            Console.WriteLine("Salary for partTime Employee");
+        }
+        
+        public override void displayResult(){
+            base.displayResult();
+            Console.WriteLine("partTime with working hours: "+ hoursWorked.ToString());
+        }
+    }
+    
+    public class FullTimeEmployee : Employee{
+        public FullTimeEmployee(string name, int id, string department) : base(name, id, department){}
+        public override void calculateSalary(){
+            Console.WriteLine("Salary for partTime Employee");
+        }
+        public override void displayResult(){
+            base.displayResult();
+        }
+    }
+
+
+// builder logic
+public interface IEmployeeBuilder{
+    IEmployeeBuilder setName(string name);
+    IEmployeeBuilder setId(int id);
+    IEmployeeBuilder setDepartment(string department);
+    Employee Build();
+}
+
+// part time employee builder class 
+public class PartTimeEmployeeBuilder : IEmployeeBuilder{
+    public string name;
+    public int id;
+    public string department;
+    public int noOfHours;
+    
+    public IEmployeeBuilder setName(string name){
+        this.name = name;
+        return this;
+    }
+    
+    public IEmployeeBuilder setId(int id){
+        this.id = id;
+        return this;
+    }
+    
+    public IEmployeeBuilder setDepartment(string department){
+        this.department = department;
+        return this;
+    }
+    
+    public PartTimeEmployeeBuilder hoursWorked(int hoursWorked){
+        this.noOfHours = hoursWorked;
+        return this;
+    }
+    
+    public Employee Build(){
+        return new PartTimeEmployee(this.name, this.id, this.department, this.noOfHours);
+    }
+}
+
+// full time employee builder class 
+public class FullTimeEmployeeBuilder : IEmployeeBuilder{
+    public string name;
+    public int id;
+    public string department;
+    
+    public IEmployeeBuilder setName(string name){
+        this.name = name;
+        return this;
+    }
+    
+    public IEmployeeBuilder setId(int id){
+        this.id = id;
+        return this;
+    }
+    
+    public IEmployeeBuilder setDepartment(string department){
+        this.department = department;
+        return this;
+    }
+    
+    
+    public Employee Build(){
+        return new FullTimeEmployee(this.name, this.id, this.department);
+    }
+}
+
+// service class
+public class EmployeeService{
+    // list declaration
+    List<Employee> employees = new List<Employee>();
+    
+    // creating a single private instance of EmployeeService
+    private static readonly EmployeeService _instance = new EmployeeService();  
+    
+    
+    // Private constructor to prevent instantiation from outside
+    private EmployeeService() {}
+    
+    // public accessor for the above instance
+    public static EmployeeService Instance => _instance;
+    
+    public void addEmployees(Employee emp){
+        this.employees.Add(emp);
+    }
+    
+    public void getAllEmployees(){
+        foreach(var emp in employees){
+            emp.displayResult();
+        }
+    }
+}
+
+class HelloWorld {
+  static void Main() {
+    // var obj1 = new PartTimeEmployeeBuilder()
+    //               .setName("Rayan")
+    //               .setId(1)
+    //               .setDepartment("IT")
+    //               .hoursWorked(8)
+    //               .Build();
+    // This fails because the IEmployeeBuilder doesnt contain SetHoursWorked method
+                   
+    var obj2 = new FullTimeEmployeeBuilder()
+                   .setName("Royal")
+                   .setId(2)
+                   .setDepartment("ESC")
+                   .Build();
+                   
+    // EmployeeService.Instance.addEmployees(obj1);
+    EmployeeService.Instance.addEmployees(obj2);
+    EmployeeService.Instance.getAllEmployees();
+  }
+}
